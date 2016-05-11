@@ -115,13 +115,13 @@
                 <div class="tips-box hide">
                     <div class="tips-arrow"></div>
                     <ul class="tips-inner">
-                        <li>Menu</li>
-                        <li>Tags</li>
+                        <li>菜单</li>
+                        <li>标签</li>
                         
-                        <li>Friends</li>
+                        <li>友情链接</li>
                         
                         
-                        <li>About Me</li>
+                        <li>关于我</li>
                         
                     </ul>
                 </div>
@@ -235,9 +235,109 @@
             </nav>
         </header>                
     </div>
-    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-gitlab" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/05/11/gitlab/" class="article-date">
+      <time datetime="2016-05-11T06:39:31.000Z" itemprop="datePublished">2016-05-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/05/11/gitlab/">gitlab</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="gitLab官网安装"><a href="#gitLab官网安装" class="headerlink" title="gitLab官网安装"></a>gitLab官网安装</h1><h2 id="服务器搭建"><a href="#服务器搭建" class="headerlink" title="服务器搭建"></a>服务器搭建</h2><p>◆ 官网安装地址（<strong>gitLab官网地址</strong>）</p>
+<blockquote>
+<p>官网地址<a href="https://about.gitlab.com/downloads/" target="_blank" rel="external">https://about.gitlab.com/downloads/</a></p>
+</blockquote>
+<ol>
+<li>选择安装gitLab的系统<br><img src="./img/gitlab/1.png" alt="gitlab" width="180px"></li>
+<li><p>安装官网描述在所在环境中执行指定命令。（eg：Centos 6 and 7） </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install curl policycoreutils openssh-server openssh-clients</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> sshd</span><br><span class="line">sudo systemctl start sshd</span><br><span class="line">sudo yum install postfix</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> postfix</span><br><span class="line">sudo systemctl start postfix</span><br><span class="line">sudo firewall-cmd --permanent --add-service=http</span><br><span class="line">sudo systemctl reload firewalld</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若是你能连接外网(访问国外网站-翻墙)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="_">-s</span>S https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash</span><br><span class="line">sudo yum install gitlab-ce</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若是你不能连接外网<br>请下载rpm包<a href="http://pan.baidu.com/s/1c2e9hW8" target="_blank" rel="external">gitlab-ce-8.7.0-ce.0.el6.x86_64.rpm</a><br>运行代码如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm -i gitlab-ce-8.7.0-ce.0.el6.x86_64.rpm</span><br><span class="line">sudo gitlab-ctl reconfigure</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问服务机地址(ip地址，默认端口是80)</p>
+</li>
+<li>常用命令说明<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">重启配置:sudo gitlab-ctl reconfigure</span><br><span class="line">重启服务:sudo gitlab-ctl stop/start</span><br><span class="line">查看日志:gitlab-ctl tail</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="gitLab配置"><a href="#gitLab配置" class="headerlink" title="gitLab配置"></a>gitLab配置</h2><p>◆ gitLab基本配置都集中在/etc/gitlab/gitlab.rb（<strong>gitLab集中配置</strong>）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请先配置如下来指定服务挂在的服务机地址</span><br><span class="line">external_url <span class="string">'http://ip'</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="gitLab邮件配置"><a href="#gitLab邮件配置" class="headerlink" title="gitLab邮件配置"></a>gitLab邮件配置</h3><p>配置SMTP发送邮件配置，使用163邮箱。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">注释<span class="comment">###163 exmail</span></span><br><span class="line">注释<span class="comment">#Sending application email via SMTP#</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_enable'</span>] = <span class="literal">true</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_address'</span>] = <span class="string">"smtp.163.com"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_port'</span>] = 25 </span><br><span class="line">gitlab_rails[<span class="string">'smtp_user_name'</span>] = <span class="string">"发件箱@163.com"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_password'</span>] = <span class="string">"发件箱账号"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_domain'</span>] = <span class="string">"163.com"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_authentication'</span>] = :login</span><br><span class="line">gitlab_rails[<span class="string">'smtp_enable_starttls_auto'</span>] = <span class="literal">true</span></span><br><span class="line">注释<span class="comment">#</span></span><br><span class="line">注释<span class="comment">###修改gitlab配置的发信人</span></span><br><span class="line">gitlab_rails[<span class="string">'gitlab_email_from'</span>] = <span class="string">"发件箱@163.com"</span></span><br><span class="line">user[<span class="string">"git_user_email"</span>] = <span class="string">"发件箱@163.com"</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="gitlab使用postgresql数据库的一些说明"><a href="#gitlab使用postgresql数据库的一些说明" class="headerlink" title="gitlab使用postgresql数据库的一些说明"></a>gitlab使用postgresql数据库的一些说明</h3><ol>
+<li><p>重启数据库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl restart postgresql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据库配置修改<br><strong><em>配置地址</em></strong> /var/opt/gitlab/postgresql/data </p>
+</li>
+<li>vim postgresql.conf 修改后需要重启<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">注释<span class="comment"># 修改监听地址为ip，*表示全部IP都可以进入数据库</span></span><br><span class="line">（有账号就需要账号验证，无账号就可以直接连接进来）</span><br><span class="line">listen_addresses = <span class="string">'*'</span>    </span><br><span class="line">port = 5432        注释<span class="comment"># 监听端口</span></span><br><span class="line">max_connections = 200      <span class="comment"># (change requires restart)</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>vim pg_hba.conf 连接数据库的配置</li>
+</ol>
+<ul>
+<li>host all all 192.168.1.0/24 trust  添加这行，192.168.1.0/24这个段的ip地址不需要密码可以连接<blockquote>
+<p>在维护 PostgreSQL 库时，有两个配置文件修改的情况比较多，第一是认证文件 pg_hba.conf，另一个是配置文件 postgresql.conf。<br>其中 pg_hba.conf 的更改更频繁些，因为业务服务器经常出现调整，或增加应用服务器，此时需要增加 pg_hba.conf 的 IP 签权信息，因为目前我们的生产库对 IP 实行严格控制，只有指定的 IP 权限才被开放，下面是一个生产库的 pg_hba.conf 文件。</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">注释<span class="comment"># TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD</span></span><br><span class="line">host postgres all 0.0.0.0/0 reject</span><br><span class="line">host template0 all 0.0.0.0/0 reject</span><br><span class="line">host template1 all 0.0.0.0/0 reject</span><br><span class="line">注释<span class="comment">#Aplication Ip list</span></span><br><span class="line">host all all 180.166.148.57/32 md5 表示仅仅允许这个IP的外网地址可以连接到数据库</span><br><span class="line">注释<span class="comment"># "local" is for Unix domain socket connections only</span></span><br><span class="line"><span class="built_in">local</span> all all peer map=gitlab</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>备注：前三行的认证策略为 reject ，表示不允许任何远程的连接连接系统库，之后才是应用服务器的IP 列表，没列入文件的 IP 将不允许连接，这就是常见的 “no pg_hba.conf entry” 错误。<br>“no pg_hba.conf entry” 错误<br>备注：更多的时候，有时不小心在配置文件 pg_hba.conf 增加了非法字符，也不会报错，但会带来问题。</p>
+</blockquote>
+<h1 id="gitLab开源组织bitnami安装"><a href="#gitLab开源组织bitnami安装" class="headerlink" title="gitLab开源组织bitnami安装"></a>gitLab开源组织bitnami安装</h1><ul>
+<li><a href="http://pan.baidu.com/s/1i43Rhpr" target="_blank" rel="external">bitnami安装说明文档</a></li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-meeting" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -476,7 +576,7 @@
 <h4 id="Blockquotes"><a href="#Blockquotes" class="headerlink" title="Blockquotes"></a>Blockquotes</h4><blockquote>
 <p>Right angle brackets &gt; are used for block quotes.</p>
 </blockquote>
-<h4 id="Links-and-Email"><a href="#Links-and-Email" class="headerlink" title="Links and Email"></a>Links and Email</h4><p>An email <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x65;&#120;&#97;&#x6d;&#112;&#x6c;&#101;&#x40;&#x65;&#x78;&#97;&#x6d;&#112;&#x6c;&#101;&#x2e;&#x63;&#111;&#109;">&#x65;&#120;&#97;&#x6d;&#112;&#x6c;&#101;&#x40;&#x65;&#x78;&#97;&#x6d;&#112;&#x6c;&#101;&#x2e;&#x63;&#111;&#109;</a> link.</p>
+<h4 id="Links-and-Email"><a href="#Links-and-Email" class="headerlink" title="Links and Email"></a>Links and Email</h4><p>An email <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#101;&#120;&#x61;&#x6d;&#112;&#108;&#x65;&#x40;&#x65;&#x78;&#x61;&#x6d;&#112;&#108;&#101;&#x2e;&#x63;&#x6f;&#109;">&#101;&#120;&#x61;&#x6d;&#112;&#108;&#x65;&#x40;&#x65;&#x78;&#x61;&#x6d;&#112;&#108;&#101;&#x2e;&#x63;&#x6f;&#109;</a> link.</p>
 <p>Simple inline link <a href="http://chenluois.com">http://chenluois.com</a>, another inline link <a href="http://25.io/smaller/">Smaller</a>, one more inline link with title <a href="http://resizesafari.com" title="a Safari extension">Resize</a>.</p>
 <p>A <a href="http://25.io/mou/" title="Markdown editor on Mac OS X">reference style</a> link. Input id, then anywhere in the doc, define the link with corresponding id:</p>
 <p>Titles ( or called tool tips ) in the links are optional.</p>
@@ -752,14 +852,14 @@ var Mou = exactlyTheAppIwant;
                 2016 Kaven
             </div>
             <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
             </div>
         </div>
         
             <div class="visit">
                 
                     <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >Site Visitors: 
+                        <span id="site-visit" >本站到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -769,7 +869,7 @@ var Mou = exactlyTheAppIwant;
                 
                 
                     <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">Page Hits: 
+                        <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
                     </span>
@@ -802,9 +902,9 @@ var Mou = exactlyTheAppIwant;
 
 
 <div class="scroll" id="scroll">
-    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" title="Comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
 </div>
 
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
