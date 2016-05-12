@@ -115,13 +115,13 @@
                 <div class="tips-box hide">
                     <div class="tips-arrow"></div>
                     <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
+                        <li>Menu</li>
+                        <li>Tags</li>
                         
-                        <li>友情链接</li>
+                        <li>Friends</li>
                         
                         
-                        <li>关于我</li>
+                        <li>About Me</li>
                         
                     </ul>
                 </div>
@@ -235,7 +235,7 @@
             </nav>
         </header>                
     </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
 </nav>
       <div class="body-wrap">
   
@@ -268,7 +268,7 @@
           
         <h1 id="gitLab官网安装"><a href="#gitLab官网安装" class="headerlink" title="gitLab官网安装"></a>gitLab官网安装</h1><h2 id="服务器搭建"><a href="#服务器搭建" class="headerlink" title="服务器搭建"></a>服务器搭建</h2><p>◆ 官网安装地址（<strong>gitLab官网地址</strong>）</p>
 <blockquote>
-<p>官网地址<a href="https://about.gitlab.com/downloads/" target="_blank" rel="external">https://about.gitlab.com/downloads/</a></p>
+<p>官网地址<a href="https://about.gitlab.com/downloads/" target="_blank" rel="external">https://about.gitlab.com/downloads/</a><br>国内地址<a href="http://www.gitlab.cc/downloads/" target="_blank" rel="external">http://www.gitlab.cc/downloads/</a></p>
 </blockquote>
 <ol>
 <li>选择安装gitLab的系统<br><img src="./img/gitlab/1.png" alt="gitlab" width="180px"></li>
@@ -311,8 +311,54 @@
 <p>备注：前三行的认证策略为 reject ，表示不允许任何远程的连接连接系统库，之后才是应用服务器的IP 列表，没列入文件的 IP 将不允许连接，这就是常见的 “no pg_hba.conf entry” 错误。<br>“no pg_hba.conf entry” 错误<br>备注：更多的时候，有时不小心在配置文件 pg_hba.conf 增加了非法字符，也不会报错，但会带来问题。</p>
 </blockquote>
 <h1 id="gitLab开源组织bitnami安装"><a href="#gitLab开源组织bitnami安装" class="headerlink" title="gitLab开源组织bitnami安装"></a>gitLab开源组织bitnami安装</h1><ul>
-<li><a href="http://pan.baidu.com/s/1i43Rhpr" target="_blank" rel="external">bitnami安装说明文档</a></li>
+<li><a href="http://pan.baidu.com/s/1i43Rhpr" target="_blank" rel="external">bitnami安装说明文档</a><h1 id="gitLab升级篇"><a href="#gitLab升级篇" class="headerlink" title="gitLab升级篇"></a>gitLab升级篇</h1></li>
 </ul>
+<ol>
+<li>下载最新安装包<a href="https://packages.gitlab.com/gitlab/gitlab-ce" target="_blank" rel="external">【根据不同系统下载对应的安装包】</a></li>
+<li>备份gitLab<strong><em>升级有风险，备份有必要</em></strong><blockquote>
+<p>停止unicorn、sidekiq：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl stop unicorn</span><br><span class="line">gitlab-ctl stop sidekiq</span><br><span class="line">gitlab-ctl stop nginx</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ol>
+<p>◆ <strong><em>创建数据备份，防止更新失败</em></strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>使用以上命令会在<font color="#FF1493">/var/opt/gitlab/backups</font>目录下创建一个名称类似为</p>
+<p><font color="#FF1493">1393513186_gitlab_backup.tar</font>的压缩包, 这个压缩包就是Gitlab整个的完整部分, 其中开头的</p>
+<p><font color="#FF1493">1393513186</font>是备份创建的日期.</p>
+</blockquote>
+<p>◆ <strong><em>Gitlab 修改备份文件默认目录</em></strong></p>
+<blockquote>
+<p>你也可以通过修改/etc/gitlab/gitlab.rb来修改默认存放备份文件的目录:</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab_rails[<span class="string">'backup_path'</span>] = <span class="string">'/mnt/backups'</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><font color="#FF1493">/mnt/backups</font>修改为你想存放备份的目录即可, 修改完成之后使用<font color="#FF1493">gitlab-ctl reconfigure</font>命令重载配置文件即可.</p>
+</blockquote>
+<p>◆ <strong><em>Gitlab 自动备份</em></strong>也可以通过crontab使用备份命令实现自动备份:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su -</span><br><span class="line">crontab <span class="_">-e</span></span><br></pre></td></tr></table></figure>
+<p>加入以下, 实现每天凌晨2点进行一次自动备份:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 2 * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+<p>◆ <strong><em>Gitlab 恢复</em></strong>同样, Gitlab的从备份恢复也非常简单:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">注释<span class="comment"># 停止相关数据连接服务</span></span><br><span class="line">gitlab-ctl stop unicorn</span><br><span class="line">gitlab-ctl stop sidekiq</span><br><span class="line">注释<span class="comment"># 从1393513186编号备份中恢复</span></span><br><span class="line">gitlab-rake gitlab:backup:restore BACKUP=1393513186</span><br><span class="line">注释<span class="comment"># 启动Gitlab</span></span><br><span class="line">sudo gitlab-ctl start</span><br></pre></td></tr></table></figure>
+<p>◆ <strong><em>Gitlab迁移</em></strong></p>
+<blockquote>
+<p>迁移如同备份与恢复的步骤一样, 只需要将老服务器<font color="#FF1493">/var/opt/gitlab/backups</font>目录下的备份文件拷贝<br>到新服务器上的<font color="#FF1493">/var/opt/gitlab/backups</font>即可(如果你没修改过默认备份目录的话). 但是需要注意的<br>是新服务器上的Gitlab的版本必须与创建备份时的Gitlab版本号相同. 比如新服务器安装的是最新的<br>7.60版本的Gitlab, 那么迁移之前, 最好将老服务器的Gitlab 升级为7.60在进行备份.</p>
+</blockquote>
+<p>◆ <strong><em>其他</em></strong><br>最新版本的Gitlab已经修复了HTTPS设备的BUG, 现在使用<a href="https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md" target="_blank" rel="external"><font color="#00BFFF">官方HTTPS配置</font></a>即可轻松启用HTTPS.</p>
+<ol>
+<li>安装升级包</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh gitlab-7.4.2_omnibus-1.el6.x86_64.rpm</span><br></pre></td></tr></table></figure>
+<ol>
+<li>重新加载配置</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl reconfigure</span><br></pre></td></tr></table></figure>
+<p>5.重启Gitlab服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl restart</span><br></pre></td></tr></table></figure>
+<p>6.查看当前gitlab版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /opt/gitlab/embedded/service/gitlab-rails/VERSION</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -576,7 +622,7 @@
 <h4 id="Blockquotes"><a href="#Blockquotes" class="headerlink" title="Blockquotes"></a>Blockquotes</h4><blockquote>
 <p>Right angle brackets &gt; are used for block quotes.</p>
 </blockquote>
-<h4 id="Links-and-Email"><a href="#Links-and-Email" class="headerlink" title="Links and Email"></a>Links and Email</h4><p>An email <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#101;&#120;&#x61;&#x6d;&#112;&#108;&#x65;&#x40;&#x65;&#x78;&#x61;&#x6d;&#112;&#108;&#101;&#x2e;&#x63;&#x6f;&#109;">&#101;&#120;&#x61;&#x6d;&#112;&#108;&#x65;&#x40;&#x65;&#x78;&#x61;&#x6d;&#112;&#108;&#101;&#x2e;&#x63;&#x6f;&#109;</a> link.</p>
+<h4 id="Links-and-Email"><a href="#Links-and-Email" class="headerlink" title="Links and Email"></a>Links and Email</h4><p>An email <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#101;&#120;&#x61;&#x6d;&#x70;&#108;&#101;&#x40;&#101;&#120;&#97;&#x6d;&#112;&#108;&#x65;&#x2e;&#99;&#111;&#109;">&#101;&#120;&#x61;&#x6d;&#x70;&#108;&#101;&#x40;&#101;&#120;&#97;&#x6d;&#112;&#108;&#x65;&#x2e;&#99;&#111;&#109;</a> link.</p>
 <p>Simple inline link <a href="http://chenluois.com">http://chenluois.com</a>, another inline link <a href="http://25.io/smaller/">Smaller</a>, one more inline link with title <a href="http://resizesafari.com" title="a Safari extension">Resize</a>.</p>
 <p>A <a href="http://25.io/mou/" title="Markdown editor on Mac OS X">reference style</a> link. Input id, then anywhere in the doc, define the link with corresponding id:</p>
 <p>Titles ( or called tool tips ) in the links are optional.</p>
@@ -852,14 +898,14 @@ var Mou = exactlyTheAppIwant;
                 2016 Kaven
             </div>
             <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
             </div>
         </div>
         
             <div class="visit">
                 
                     <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >本站到访数: 
+                        <span id="site-visit" >Site Visitors: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -869,7 +915,7 @@ var Mou = exactlyTheAppIwant;
                 
                 
                     <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">本页阅读量: 
+                        <span id="page-visit">Page Hits: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
                     </span>
@@ -902,9 +948,9 @@ var Mou = exactlyTheAppIwant;
 
 
 <div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
 </div>
 
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
